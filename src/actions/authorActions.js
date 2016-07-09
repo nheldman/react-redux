@@ -2,41 +2,48 @@ import * as types from './actionTypes';
 import authorApi from '../api/mockAuthorApi';
 import {beginAjaxCall, ajaxCallError} from './ajaxStatusActions';
 
-export function loadAuthorsSuccess(authors) {
-  return { type: types.LOAD_AUTHORS_SUCCESS, authors };
-}
+export const loadAuthorsSuccess = (authors) => ({
+  type: types.LOAD_AUTHORS_SUCCESS,
+  authors
+});
 
-export function createAuthorSuccess(author) {
-  return { type: types.CREATE_AUTHOR_SUCCESS, author };
-}
+export const createAuthorSuccess = (author) => ({
+  type: types.CREATE_AUTHOR_SUCCESS,
+  author
+});
 
-export function updateAuthorSuccess(author) {
-  return { type: types.UPDATE_AUTHOR_SUCCESS, author };
-}
+export const updateAuthorSuccess = (author) => ({
+  type: types.UPDATE_AUTHOR_SUCCESS,
+  author
+});
 
-export function loadAuthors() {
-  return function(dispatch) {
-    dispatch(beginAjaxCall());
-    return authorApi.getAllAuthors().then(authors => {
+export const loadAuthors = () => (dispatch) => {
+  dispatch(beginAjaxCall());
+
+  return authorApi.getAllAuthors().then(
+    authors => {
       dispatch(loadAuthorsSuccess(authors));
-    }).catch(error => {
+    },
+    error => {
       dispatch(ajaxCallError(error));
       throw(error);
-    });
-  };
-}
+    }
+  );
+};
 
-export function saveAuthor(author) {
-  return function (dispatch, getState) {
-    dispatch(beginAjaxCall());
-    return authorApi.saveAuthor(author).then(savedAuthor => {
+export const saveAuthor = (author) => (dispatch, getState) => {
+  dispatch(beginAjaxCall());
+
+  return authorApi.saveAuthor(author).then(
+    savedAuthor => {
       author.id
         ? dispatch(updateAuthorSuccess(savedAuthor))
         : dispatch(createAuthorSuccess(savedAuthor));
-    }).catch(error => {
+    },
+    error => {
       dispatch(ajaxCallError(error));
       throw(error);
-    });
-  };
-}
+    }
+  );
+};
 
